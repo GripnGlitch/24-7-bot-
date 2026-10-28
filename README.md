@@ -291,7 +291,10 @@ This keeps your passwords off GitHub.
 | BOT_USERNAME      | The bot's Minecraft username              |
 | BOT_PASSWORD      | The bot's Minecraft password (if needed)  |
 | BOT_AUTH_PASSWORD | The password for /login on the server     |
-| PORT              | The port for the web dashboard (optional) |
+| BOT_SERVER_HOST   | Override the Minecraft server hostname    |
+| BOT_SERVER_PORT   | Override the Minecraft server port        |
+| BOT_VERSION       | Force a supported Minecraft version; leave unset to auto-detect |
+| PORT              | The port for the web dashboard (optional)  |
 
 ---
 
