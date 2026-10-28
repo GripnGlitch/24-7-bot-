@@ -353,6 +353,14 @@ function createBot() {
   const serverHost = process.env.BOT_SERVER_HOST || config.server.ip;
   const serverPort = Number(process.env.BOT_SERVER_PORT || config.server.port);
 
+  if (!serverHost || !Number.isInteger(serverPort) || serverPort < 1 || serverPort > 65535) {
+    const message = 'Invalid Minecraft server configuration. Set BOT_SERVER_HOST and BOT_SERVER_PORT.';
+    console.log(`[Bot] ${message}`);
+    pushError({ type: 'configuration', message, time: Date.now() });
+    scheduleReconnect();
+    return;
+  }
+
   try {
     const configuredVersion = process.env.BOT_VERSION || config.server.version;
     const botVersion = configuredVersion && configuredVersion.trim() !== '' ? configuredVersion.trim() : false;
@@ -465,6 +473,9 @@ function createBot() {
     bot.on('error', (err) => {
       console.log(`[Bot] Error: ${err.message}`);
       pushError({ type: 'error', message: err.message, time: Date.now() });
+      if (err.code === 'ENOTFOUND' || err.code === 'EAI_AGAIN') {
+        console.log(`[Bot] Cannot resolve ${serverHost}. Set BOT_SERVER_HOST to the current server address.`);
+      }
 
     });
 

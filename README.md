@@ -189,6 +189,11 @@ Environment variable to add in Render's dashboard:
 
 Without that variable the self-ping will not activate.
 
+If the Minecraft host changes, set `BOT_SERVER_HOST` and `BOT_SERVER_PORT` in the
+hosting platform's environment variables. The bot reports DNS failures clearly
+and retries automatically; it cannot join while the configured hostname has no
+DNS record.
+
 ---
 
 ### Oracle Cloud Free Tier (Best long-term option - Truly free forever)
