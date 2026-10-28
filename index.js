@@ -350,21 +350,25 @@ function createBot() {
     bot = null;
   }
 
-  console.log(`[Bot] Connecting to ${config.server.ip}:${config.server.port}`);
+  const serverHost = process.env.BOT_SERVER_HOST || config.server.ip;
+  const serverPort = Number(process.env.BOT_SERVER_PORT || config.server.port);
 
   try {
-    const botVersion = config.server.version && config.server.version.trim() !== '' ? config.server.version : false;
+    const configuredVersion = process.env.BOT_VERSION || config.server.version;
+    const botVersion = configuredVersion && configuredVersion.trim() !== '' ? configuredVersion.trim() : false;
 
     const botUsername = process.env.BOT_USERNAME || config['bot-account'].username;
     const botPassword = process.env.BOT_PASSWORD || config['bot-account'].password || undefined;
     const authPassword = process.env.BOT_AUTH_PASSWORD || config.utils['auto-auth']?.password;
 
+    console.log(`[Bot] Connecting to ${serverHost}:${serverPort}${botVersion ? ` (version ${botVersion})` : ' (version auto-detect)'}`);
+
     bot = mineflayer.createBot({
       username: botUsername,
       password: botPassword,
       auth: config['bot-account'].type,
-      host: config.server.ip,
-      port: config.server.port,
+      host: serverHost,
+      port: serverPort,
       version: botVersion,
       hideErrors: false,
       checkTimeoutInterval: 600000
@@ -887,7 +891,7 @@ function sendDiscordWebhook(content, color = 0x0099ff) {
 
   const options = {
     hostname: urlParts.hostname,
-    port: 443,
+    port: urlParts.port || (urlParts.protocol === 'https:' ? 443 : 80),
     path: urlParts.pathname + urlParts.search,
     method: 'POST',
     headers: {
@@ -941,7 +945,7 @@ process.on('SIGINT',  () => console.log('[System] SIGINT received - staying aliv
 console.log('='.repeat(50));
 console.log('  Minecraft AFK Bot - Fixed Edition');
 console.log('='.repeat(50));
-console.log(`Server:         ${config.server.ip}:${config.server.port}`);
+console.log(`Server:         ${process.env.BOT_SERVER_HOST || config.server.ip}:${process.env.BOT_SERVER_PORT || config.server.port}`);
 console.log(`Bot Username:   ${process.env.BOT_USERNAME || config['bot-account'].username}`);
 console.log(`Auto-Reconnect: ${config.utils['auto-reconnect'] ? 'Enabled' : 'Disabled'}`);
 console.log('='.repeat(50));
